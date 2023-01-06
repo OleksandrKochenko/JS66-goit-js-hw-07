@@ -24,11 +24,18 @@ gallery.addEventListener('click', handleClick);
 function handleClick(event) {
     event.preventDefault();
     bigSizeUrl = event.target.dataset.source;
-    const instance = basicLightbox.create(`<img src=${bigSizeUrl}>`);
-    instance.show(() => document.body.addEventListener("keydown", ({key}) => {
-        if (key === "Escape") {
-        instance.close()
+    const instance = basicLightbox.create(`<img src=${bigSizeUrl}>`, {
+        onShow: () => {
+            document.body.addEventListener("keydown", closeOnEsc)
+        },
+        onClose: () => {
+            document.body.removeEventListener("keydown", closeOnEsc)
         }
-    }));
+    });
+    instance.show();
+    function closeOnEsc({ key }) {
+        if (key === "Escape") {
+            instance.close()
+        }
+    }
 }
-
